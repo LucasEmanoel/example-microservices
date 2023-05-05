@@ -1,0 +1,32 @@
+version: '3.4'
+services:
+  db:
+    image: mysql:5.7.22
+    command: mysqld --default_authentication_plugin=mysql_native_password
+    environment:
+      TZ: America/Recife
+      MYSQL_ROOT_PASSWORD: docker
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      MYSQL_DATABASE: wordpress
+    ports:
+      - "3306:3306"
+    networks:
+      - network-word
+  wordpress:
+    image: wordpress:latest
+    environment:
+      TZ: America/Recife
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: docker
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    networks:
+      - network-word
+networks:
+  network-word:
+    driver: bridge

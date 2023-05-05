@@ -1,32 +1,17 @@
 version: '3.4'
 services:
-  db:
-    image: mysql:5.7.22
-    command: mysqld --default_authentication_plugin=mysql_native_password
-    environment:
-      TZ: America/Recife
-      MYSQL_ROOT_PASSWORD: docker
-      MYSQL_USER: docker
-      MYSQL_PASSWORD: docker
-      MYSQL_DATABASE: wordpress
+  naming-server:
+    image: lucasemanoel/naming-server:0.0.1-SNAPSHOT
     ports:
-      - "3306:3306"
+      - 8761:8761
     networks:
-      - network-word
-  wordpress:
-    image: wordpress:latest
-    environment:
-      TZ: America/Recife
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_DB_USER: root
-      WORDPRESS_DB_PASSWORD: docker
+      - spring-network
+  zipkin:
+    image: openzipkin/zipkin:2.23.2
     ports:
-      - "80:80"
-    depends_on:
-      - db
+      - 9411:9411
     networks:
-      - network-word
+      - spring-network
 networks:
-  network-word:
+  spring-network:
     driver: bridge
