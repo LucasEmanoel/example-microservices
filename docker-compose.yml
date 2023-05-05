@@ -59,6 +59,52 @@ services:
       - 3310
     networks:
       - spring-network
+  cambio-service:
+    image: lucasemanoel/cambio-service
+    restart: always
+    build: 
+      context: .
+      dockerfile: cambio-service/Dockerfile
+    environment:
+      TZ: America/Recife
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      SPRING.DATASOURCE.URL: jdbc:mysql://cambio-db:3308/cambio_service?useSSL=false&enabledTLSProtocols=TLSv1.2&serverTimezone=UTC
+      SPRING.DATASOURCE.USERNAME: root
+      SPRING.DATASOURCE.PASSWORD: admin123
+      SPRING.FLYWAY.URL: jdbc:mysql://cambio-db:3308/cambio_service?useSSL=false&enabledTLSProtocols=TLSv1.2&serverTimezone=UTC
+      SPRING.FLYWAY.USER: root
+      SPRING.FLYWAY.PASSWORD: admin123
+    ports:
+      - 8000:8000
+    depends_on:
+      - naming-server
+      - cambio-db
+    networks:
+      - spring-network
+  book-service:
+    image: lucasemanoel/book-service
+    restart: always
+    build: 
+      context: .
+      dockerfile: book-service/Dockerfile
+    environment:
+      TZ: America/Recife
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      SPRING.DATASOURCE.URL: jdbc:mysql://book-db:3310/book_service?useSSL=false&enabledTLSProtocols=TLSv1.2&serverTimezone=UTC
+      SPRING.DATASOURCE.USERNAME: root
+      SPRING.DATASOURCE.PASSWORD: admin123
+      SPRING.FLYWAY.URL: jdbc:mysql://book-db:3310/book_service?useSSL=false&enabledTLSProtocols=TLSv1.2&serverTimezone=UTC
+      SPRING.FLYWAY.USER: root
+      SPRING.FLYWAY.PASSWORD: admin123
+    ports:
+      - 8100:8100
+    depends_on:
+      - naming-server
+      - book-db
+    networks:
+      - spring-network
   
 networks:
   spring-network:
