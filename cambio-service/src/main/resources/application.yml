@@ -18,7 +18,7 @@ spring:
       probability: 1.0 #em dev 100% traces
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/cambio_service?useTimezone=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/cambio-service?useTimezone=true&serverTimezone=UTC
     username: lucas2
     password: admin
   jpa:
@@ -29,7 +29,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL57Dialect
   flyway:
-    url: jdbc:mysql://localhost:3306/cambio_service?useTimezone=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/cambio-service?useTimezone=true&serverTimezone=UTC
     user: lucas2
     password: admin
   zipkin:
