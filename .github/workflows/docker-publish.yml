@@ -22,6 +22,10 @@ jobs:
         working-directory: ./naming-server
         run: mvn spring-boot:build-image -DskipTests
         
+      - name: Build Api Gateway
+        working-directory: ./api-gateway
+        run: mvn spring-boot:build-image -DskipTests
+        
       - name: Build Book Service Jar
         working-directory: ./book-service
         run: mvn clean package -DskipTests
