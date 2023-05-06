@@ -1,11 +1,20 @@
 version: '3.4'
 
 services:
+  rabbit-mq:
+    image: rabbitmq:3.8.14-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - spring-network
   zipkin-server:
     image: openzipkin/zipkin:2.23.2
     ports:
       - 9411:9411
     restart: always
+    depends_on:
+      - rabbit-mq
     networks:
       - spring-network
   cambio-db:
@@ -37,6 +46,9 @@ services:
       TZ: America/Recife
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
       SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      RABBIT_URI: amqp://guest:guest@rabbit-mq:5672
+      SPRING_RABBIT_HOST: rabbit-mq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
       SPRING.DATASOURCE.URL: jdbc:mysql://cambio-db:3308/cambio_service?useSSL=false&serverTimezone=UTC&enabledTLSProtocols=TLSv1.2
       SPRING.DATASOURCE.USERNAME: root
       SPRING.DATASOURCE.PASSWORD: admin123
@@ -48,6 +60,7 @@ services:
     depends_on:
       - naming-server
       - cambio-db
+      - rabbit-mq
     networks:
       - spring-network
 
@@ -80,6 +93,9 @@ services:
       TZ: America/Recife
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
       SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      RABBIT_URI: amqp://guest:guest@rabbit-mq:5672
+      SPRING_RABBIT_HOST: rabbit-mq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
       SPRING.DATASOURCE.URL: jdbc:mysql://book-db:3310/book_service?useSSL=false&serverTimezone=UTC&enabledTLSProtocols=TLSv1.2
       SPRING.DATASOURCE.USERNAME: root
       SPRING.DATASOURCE.PASSWORD: admin123
@@ -91,6 +107,7 @@ services:
     depends_on:
       - naming-server
       - book-db
+      - rabbit-mq
     networks:
       - spring-network
   naming-server:
@@ -106,9 +123,13 @@ services:
       - 8765:8765
     depends_on:
       - naming-server
+      - rabbit-mq
     environment:
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
       SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      RABBIT_URI: amqp://guest:guest@rabbit-mq:5672
+      SPRING_RABBIT_HOST: rabbit-mq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
     networks:
       - spring-network
       
